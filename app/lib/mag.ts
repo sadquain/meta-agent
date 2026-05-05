@@ -1,4 +1,4 @@
-import { callOllama } from "./ollama";
+import { callGroq } from "./groq";
 
 export async function generateAgent(task: string) {
   const prompt = `
@@ -15,7 +15,7 @@ Return JSON:
 Task: ${task}
 `;
 
-  const res = await callOllama(prompt);
+  const res = await callGroq(prompt);
 
   try {
     return JSON.parse(res);

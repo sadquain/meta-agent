@@ -1,6 +1,6 @@
 import { runAgent } from "./agent";
 
-type Node = {
+type AgentNode = {
   id: string;
   name: string;
   systemPrompt: string;
@@ -9,39 +9,46 @@ type Node = {
 type Edge = {
   from: string;
   to: string;
-  condition?: (state: any) => boolean;
+  condition?: (state: State) => boolean;
 };
 
 type State = {
   input: string;
-  memory: any[];
+  memory: string[];
   current: string;
   done: boolean;
 };
 
-export async function runGraph(nodes: Node[], edges: Edge[], input: string) {
+type GraphLog = {
+  node: string;
+  input: string;
+  output: string;
+};
+
+export async function runGraph(nodes: AgentNode[], edges: Edge[], input: string) {
   // Add early validation
   if (!nodes.length) {
     throw new Error("Nodes array cannot be empty");
   }
 
-  let state: State = {
+  const state: State = {
     input,
     memory: [],
     current: input,
     done: false
   };
 
-  let currentNode: Node = nodes[0]; // Now guaranteed to exist
+  let currentNode: AgentNode | undefined = nodes[0]; // Now guaranteed to exist
 
-  const logs: any[] = [];
+  const logs: GraphLog[] = [];
 
   while (!state.done && currentNode) {
+    const activeNode: AgentNode = currentNode;
     // Ensure currentNode is defined and pass it properly
-    const output = await runAgent(currentNode, state.current);
+    const output = await runAgent(activeNode, state.current);
 
     logs.push({
-      node: currentNode.id,
+      node: activeNode.id,
       input: state.current,
       output
     });
@@ -50,7 +57,7 @@ export async function runGraph(nodes: Node[], edges: Edge[], input: string) {
     state.current = output;
 
     const nextEdge = edges.find(e =>
-      e.from === currentNode.id &&
+      e.from === activeNode.id &&
       (!e.condition || e.condition(state))
     );
 

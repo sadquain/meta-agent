@@ -1,6 +1,6 @@
-import { runAgent } from "./agent";
+import { type AgentPrompt, runAgent } from "./agent";
 
-export async function runWorkflow(agents: any[], input: string) {
+export async function runWorkflow(agents: AgentPrompt[], input: string) {
   let current = input;
 
   for (const agent of agents) {

@@ -15,6 +15,10 @@ export default function Home() {
   const [orchLoading, setOrchLoading] = useState(false);
   const [orchLogs, setOrchLogs] = useState<any>(null);
 
+  const [graphLoading, setGraphLoading] = useState(false);
+  const [graphLogs, setGraphLogs] = useState<any[]>([]);
+  const [graphStep, setGraphStep] = useState("");
+
   const createAgent = async () => {
     setAgentLoading(true);
     setLoading(true);
@@ -90,6 +94,41 @@ export default function Home() {
     }
 
     setOrchLoading(false);
+  };
+
+  const runGraphSystem = async () => {
+    if (!input.trim()) return;
+
+    setGraphLoading(true);
+    setOutput("");
+    setGraphLogs([]);
+    setGraphStep("Initializing graph...");
+
+    try {
+      setGraphStep("Connecting nodes...");
+
+      const res = await fetch("/api/graph", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input }),
+      });
+
+      setGraphStep("Executing agents...");
+
+      const data = await res.json();
+
+      setGraphLogs(data.logs);
+      setOutput(data.final);
+
+      setGraphStep("Completed successfully");
+    } catch (err) {
+      setGraphStep("Graph execution failed");
+      setOutput("Error running graph system");
+    }
+
+    setGraphLoading(false);
   };
 
   return (
@@ -295,10 +334,40 @@ export default function Home() {
                   </>
                 )}
               </button>
+              <button
+                onClick={runGraphSystem}
+                disabled={graphLoading || !input.trim()}
+                className={`${styles.btnSecondary} ${graphLoading ? styles.running : ""}`}
+              >
+                {graphLoading ? (
+                  <>
+                    <div className="orb-loader"></div>
+                    <span>Running Graph...</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="fas fa-project-diagram"></i>
+                    <span>Run Graph Engine</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         )}
+{graphLoading && (
+  <div className="status-panel">
+    <div className="pulse-core"></div>
 
+    <div className="status-text">
+      <i className="fas fa-brain"></i>
+      {graphStep}
+    </div>
+
+    <div className="status-sub">
+      Multi-agent graph executing in real-time...
+    </div>
+  </div>
+)}
         {/* Output Section */}
         {output && (
           <div className={`${styles.card} ${styles.fadeInUp}`}>

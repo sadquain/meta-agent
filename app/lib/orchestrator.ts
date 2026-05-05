@@ -1,9 +1,22 @@
-import { runAgent } from "./agent";
+import { type AgentPrompt, runAgent } from "./agent";
 
-export async function runOrchestration(agents: any[], input: string) {
+type OrchestrationAgent = AgentPrompt & {
+  name?: string;
+};
+
+type OrchestrationLog = {
+  agent: string;
+  input: string;
+  output: string;
+};
+
+export async function runOrchestration(
+  agents: OrchestrationAgent[],
+  input: string,
+) {
   let context = input;
 
-  const logs: any[] = [];
+  const logs: OrchestrationLog[] = [];
 
   for (const agent of agents) {
     const output = await runAgent(agent, context);

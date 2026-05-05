@@ -1,7 +1,8 @@
-import { supabase } from "../../lib/supabase";
+import { getSupabase } from "../../lib/supabase";
 
 export async function POST(req: Request) {
   const { run_id, status, edited_output } = await req.json();
+  const supabase = getSupabase();
 
   await supabase
     .from("runs")

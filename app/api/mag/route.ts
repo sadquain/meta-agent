@@ -1,8 +1,9 @@
 import { generateAgent } from "../../lib/mag";
-import { supabase } from "../../lib/supabase";
+import { getSupabase } from "../../lib/supabase";
 
 export async function POST(req: Request) {
   const { task } = await req.json();
+  const supabase = getSupabase();
 
   const agent = await generateAgent(task);
 

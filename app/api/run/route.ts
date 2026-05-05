@@ -1,9 +1,10 @@
 import { runAgent } from "../../lib/agent";
-import { supabase } from "../../lib/supabase";
+import { getSupabase } from "../../lib/supabase";
 import { validate } from "../../lib/rules";
 
 export async function POST(req: Request) {
   const { agent, input } = await req.json();
+  const supabase = getSupabase();
 
   let output = await runAgent(agent, input);
 

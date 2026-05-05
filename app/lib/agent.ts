@@ -1,9 +1,14 @@
-import { callOllama } from "./ollama";
+import { callGroq } from "./groq";
 
-export async function runAgent(agent: any, input: string) {
+export type AgentPrompt = {
+  system_prompt?: string;
+  systemPrompt?: string;
+};
+
+export async function runAgent(agent: AgentPrompt, input: string) {
   const prompt = `${agent.system_prompt || agent.systemPrompt}
 
 User: ${input}`;
 
-  return await callOllama(prompt);
+  return await callGroq(prompt);
 }

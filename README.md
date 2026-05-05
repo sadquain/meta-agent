@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MetaAgent Studio
 
-## Getting Started
+MetaAgent Studio is a Next.js App Router application for creating, running, and orchestrating Groq-powered AI agents. It supports single-agent runs, sequential multi-agent orchestration, and a simple graph execution path.
 
-First, run the development server:
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Groq chat completions API
+- Supabase for agent and run persistence
+- Partial Prerendering through Next.js Cache Components
+
+## Setup
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a local environment file:
+
+```bash
+cp .env.example .env
+```
+
+Required variables:
+
+```bash
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=llama-3.3-70b-versatile
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Streaming and PPR
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses the App Router with `cacheComponents: true` in `next.config.ts`, which is the current Next.js 16 model for Partial Prerendering.
 
-## Learn More
+The home route keeps static content in `app/page.tsx` and streams dynamic sections through Suspense boundaries:
 
-To learn more about Next.js, take a look at the following resources:
+- `StudioHeader` and intro copy are static shell content.
+- `RuntimePanel` calls `connection()` and is wrapped in Suspense so request-time runtime details stream after the static shell.
+- `MetaAgentWorkspace` is isolated as a client island and wrapped with a meaningful fallback.
+- `app/loading.tsx` provides a route-level instant loading state.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Pattern:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```tsx
+<Suspense fallback={<RuntimeFallback />}>
+  <RuntimePanel />
+</Suspense>
+```
 
-## Deploy on Vercel
+Use this same pattern for future data-heavy server components that read cookies, headers, search params, databases, or uncached APIs.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## SEO Strategy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+SEO is implemented through App Router metadata and metadata file conventions:
+
+- `app/layout.tsx` defines site-wide metadata, title templates, robots defaults, and Open Graph defaults.
+- `app/page.tsx` defines route metadata for the studio home page.
+- `app/agents/[slug]/page.tsx` demonstrates dynamic metadata with `generateMetadata`.
+- `app/sitemap.ts` generates static and dynamic sitemap entries.
+- `app/robots.ts` allows public pages and blocks API routes from crawling.
+- `JsonLd` renders sanitized JSON-LD with `<script type="application/ld+json">`.
+
+Semantic HTML is used in the page shell with one `h1`, section-level `h2` headings, `main`, `header`, `section`, `aside`, and `article` elements.
+
+## Folder Structure
+
+```txt
+app/
+  agents/[slug]/page.tsx       Dynamic metadata example route
+  api/                         Route Handlers for agent workflows
+  components/
+    JsonLd.tsx                 Structured data helper
+    studio/                    Composable studio UI components
+  lib/                         Groq, orchestration, graph, Supabase helpers
+  loading.tsx                  Route-level loading fallback
+  layout.tsx                   Root layout and global metadata
+  page.tsx                     Server-rendered home shell
+  robots.ts                    robots.txt generator
+  sitemap.ts                   sitemap.xml generator
+next.config.ts                 Cache Components / PPR configuration
+```
+
+## Component Architecture
+
+The interactive studio is split into focused components:
+
+- `MetaAgentWorkspace` owns client state and API interactions.
+- `AgentCreator` renders the agent creation form.
+- `AgentRunner` renders run/orchestration controls.
+- `GraphStatus` renders graph progress.
+- `OutputPanel` renders model output.
+- `RuntimePanel` is a server component for streamed runtime information.
+
+Keep future data fetching in server components when possible, then pass small typed props into client components that need interactivity.
+
+## Deployment on Vercel
+
+1. Push the repository to GitHub.
+2. Import it in Vercel.
+3. Add the environment variables from the setup section.
+4. Deploy with the default Next.js framework settings.
+
+Vercel supports App Router streaming and PPR. Keep `NEXT_PUBLIC_SITE_URL` set to the production URL so metadata, sitemap, robots, and JSON-LD point at the canonical domain.
+
+## Useful Commands
+
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```

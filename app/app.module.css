@@ -659,6 +659,332 @@ button:disabled {
   border-left: 2px solid #3b82f6;
 }
 
+.graphBuilderShell {
+  margin-bottom: 1.75rem;
+  padding: 1rem;
+  background: rgba(12, 18, 31, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
+}
+
+.graphToolbar,
+.graphControls,
+.graphInputRow,
+.inspectorHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.graphToolbar {
+  justify-content: space-between;
+  margin-bottom: 0.875rem;
+}
+
+.graphToolbar h2,
+.graphInspector h3,
+.graphResults h3 {
+  margin: 0;
+  color: #f8fafc;
+}
+
+.graphToolbar p,
+.graphResults p,
+.edgeList p {
+  margin: 0.25rem 0 0;
+  color: #94a3b8;
+  font-size: 0.8125rem;
+}
+
+.graphControls {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.graphControls .btnPrimary,
+.graphControls .btnSecondary {
+  width: auto;
+  min-width: 132px;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+}
+
+.toggleControl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #dbeafe;
+  background: rgba(15, 23, 42, 0.72);
+  font-size: 0.875rem;
+}
+
+.toggleControl input {
+  accent-color: #22c55e;
+}
+
+.graphInputRow {
+  margin-bottom: 0.875rem;
+}
+
+.graphInput {
+  width: 100%;
+  min-height: 82px;
+  resize: vertical;
+  padding: 0.875rem;
+  color: #f8fafc;
+  background: rgba(2, 6, 23, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  font-family: inherit;
+  line-height: 1.45;
+}
+
+.graphInput:focus,
+.graphInspector input:focus,
+.graphInspector textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
+}
+
+.graphWorkbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 0.875rem;
+}
+
+.graphCanvas {
+  position: relative;
+  min-height: 520px;
+  overflow: auto;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  background:
+    linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    rgba(2, 6, 23, 0.42);
+  background-size: 28px 28px;
+}
+
+.edgeLayer {
+  position: absolute;
+  inset: 0;
+  width: 1000px;
+  height: 620px;
+  min-width: 100%;
+  min-height: 100%;
+  pointer-events: none;
+}
+
+.edgeLayer marker polygon {
+  fill: #64748b;
+}
+
+.graphEdge,
+.activeEdge {
+  stroke-width: 2;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+.graphEdge {
+  stroke: rgba(148, 163, 184, 0.72);
+}
+
+.activeEdge {
+  stroke: #facc15;
+  stroke-width: 4;
+  stroke-dasharray: 12 8;
+  animation: edgeFlow 0.8s linear infinite;
+}
+
+@keyframes edgeFlow {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.graphNode {
+  position: absolute;
+  width: 220px;
+  min-height: 102px;
+  padding: 0.85rem;
+  color: #e2e8f0;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.32);
+  cursor: grab;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  z-index: 2;
+}
+
+.graphNode:active {
+  cursor: grabbing;
+}
+
+.graphNode strong {
+  display: block;
+  margin: 0.5rem 0 0.35rem;
+  color: #f8fafc;
+  line-height: 1.2;
+}
+
+.graphNode p {
+  display: -webkit-box;
+  min-height: 2.5rem;
+  margin: 0;
+  overflow: hidden;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.graphNode pre {
+  max-height: 92px;
+  margin: 0.65rem 0 0;
+  padding: 0.55rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  color: #bbf7d0;
+  background: rgba(0, 0, 0, 0.34);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.nodeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nodeHeader span {
+  overflow: hidden;
+  color: #67e8f9;
+  font-family: "Monaco", "Menlo", monospace;
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nodeHeader button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  color: #f8fafc;
+  background: rgba(34, 197, 94, 0.18);
+  cursor: pointer;
+}
+
+.selectedNode {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15), 0 18px 36px rgba(0, 0, 0, 0.32);
+}
+
+.activeNode {
+  border-color: #facc15;
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.14), 0 22px 44px rgba(0, 0, 0, 0.4);
+}
+
+.graphInspector,
+.graphResults section {
+  padding: 0.875rem;
+  background: rgba(2, 6, 23, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 8px;
+}
+
+.graphInspector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.inspectorHeader {
+  justify-content: space-between;
+}
+
+.graphInspector label {
+  display: grid;
+  gap: 0.4rem;
+  color: #cbd5e1;
+  font-size: 0.8125rem;
+}
+
+.graphInspector input,
+.graphInspector textarea {
+  width: 100%;
+  padding: 0.65rem;
+  color: #f8fafc;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.graphInspector textarea {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.edgeList {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.edgeList button {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  color: #e2e8f0;
+  text-align: left;
+  background: rgba(15, 23, 42, 0.76);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.edgeList button:hover:not(:disabled) {
+  border-color: #f87171;
+}
+
+.graphResults {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.875rem;
+  margin-top: 0.875rem;
+}
+
+.graphResults article {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.graphResults strong {
+  color: #67e8f9;
+}
+
+.graphResults pre {
+  max-height: 240px;
+  margin: 0.5rem 0 0;
+  overflow: auto;
+  white-space: pre-wrap;
+  color: #dbeafe;
+  font-family: "Monaco", "Menlo", monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
 /* Animations */
 @keyframes fadeInDown {
   from {
@@ -727,6 +1053,29 @@ button:disabled {
   .runtimePanel {
     align-items: flex-start;
     flex-direction: column;
+  }
+  .graphToolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .graphControls {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .graphControls .btnPrimary,
+  .graphControls .btnSecondary,
+  .toggleControl {
+    width: 100%;
+  }
+  .graphWorkbench,
+  .graphResults {
+    grid-template-columns: 1fr;
+  }
+  .graphCanvas {
+    min-height: 620px;
+  }
+  .graphInspector {
+    order: -1;
   }
 }
 

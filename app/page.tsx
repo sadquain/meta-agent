@@ -40,8 +40,8 @@ export default function Home() {
         <section className={styles.shellIntro} aria-labelledby="overview-heading">
           <h2 id="overview-heading">Build and run composable AI agents</h2>
           <p>
-            Create a specialist agent, test it with Groq, or pass work through
-            planner, executor, and graph workflows.
+            Create specialist agents, compose them into graph workflows, and
+            watch each node stream live output while the system runs.
           </p>
         </section>
 

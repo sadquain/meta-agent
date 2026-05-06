@@ -8,7 +8,7 @@ export type GeneratedAgent = {
 };
 
 function parseAgentResponse(response: string): GeneratedAgent {
-  const cleaned = response
+  const cleaned = extractJsonObject(response)
     .trim()
     .replace(/^```(?:json)?\s*/i, "")
     .replace(/\s*```$/i, "");
@@ -52,11 +52,67 @@ function parseAgentResponse(response: string): GeneratedAgent {
   };
 }
 
+function extractJsonObject(response: string) {
+  const trimmed = response.trim();
+
+  if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+    return trimmed;
+  }
+
+  const firstBrace = trimmed.indexOf("{");
+
+  if (firstBrace === -1) {
+    return trimmed;
+  }
+
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+
+  for (let index = firstBrace; index < trimmed.length; index += 1) {
+    const char = trimmed[index];
+
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+
+    if (char === "\\") {
+      escaped = true;
+      continue;
+    }
+
+    if (char === "\"") {
+      inString = !inString;
+      continue;
+    }
+
+    if (inString) {
+      continue;
+    }
+
+    if (char === "{") {
+      depth += 1;
+    }
+
+    if (char === "}") {
+      depth -= 1;
+
+      if (depth === 0) {
+        return trimmed.slice(firstBrace, index + 1);
+      }
+    }
+  }
+
+  return trimmed;
+}
+
 export async function generateAgent(task: string): Promise<GeneratedAgent> {
   const prompt = `
 You are a Meta-Agent Generator.
 
-Return JSON:
+Return only valid JSON. Do not include markdown, prose, or code fences.
+The JSON object must match this exact shape:
 {
   "name": "",
   "role": "",
@@ -67,7 +123,7 @@ Return JSON:
 Task: ${task}
 `;
 
-  const res = await callGroq(prompt);
+  const res = await callGroq(prompt, { jsonMode: true });
 
   if (res.startsWith("LLM request failed")) {
     throw new Error(res);

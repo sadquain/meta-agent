@@ -15,3 +15,16 @@ export type GraphLog = {
   input?: string;
   output?: string;
 };
+
+export type GraphNode = {
+  id: string;
+  name: string;
+  systemPrompt: string;
+  x: number;
+  y: number;
+};
+
+export type GraphEdge = {
+  from: string;
+  to: string;
+};

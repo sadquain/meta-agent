@@ -6,6 +6,7 @@ import { AgentRunner } from "./AgentRunner";
 import { GraphStatus } from "./GraphStatus";
 import { LoadingState } from "./LoadingState";
 import { OutputPanel } from "./OutputPanel";
+import { VisualGraphBuilder } from "./VisualGraphBuilder";
 import type { AgentConfig, GraphLog } from "./types";
 
 export function MetaAgentWorkspace() {
@@ -138,6 +139,8 @@ export function MetaAgentWorkspace() {
         onTaskChange={setTask}
         onCreate={createAgent}
       />
+
+      <VisualGraphBuilder />
 
       {loading && !agent && !output && <LoadingState />}
 
